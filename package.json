@@ -1,0 +1,11 @@
+{
+    "name": "PhotoExplorer",
+    "main": "index.html",
+    "version": "0.0.11",
+    "window": {
+        "fullscreen": true,
+        "toolbar": false,
+        "width": 1280,
+        "height": 800
+    }
+}
