@@ -8,5 +8,5 @@
     <i ng-class="playAndPauseClass"></i>
 </div>
 <div class="box" ng-hide="hidePic">
-    <img id="currPic" ng-src="/Users/Public/pic/{{fileName}}" ng-style="imgStyle" imageonload="imageOnLoad();" ng-swipe-left="nextPhoto();"/>
+    <img id="currPic" ng-src="{{userConfig.picPath+fileName}}" ng-style="imgStyle" imageonload="imageOnLoad();" ng-swipe-left="nextPhoto();"/>
 </div>

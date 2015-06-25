@@ -108,6 +108,11 @@ app.directive('imageonload', function() {
     };
 });
 app.controller('PhotoController', function($scope, $interval, $timeout, $state, $window) {
+    $scope.userConfig = $window.userConfig;
+    $scope.$watch(function() {return $window.files;}, function() {
+        $scope.files = $window.files;
+    });
+
     if(!localStorage.getItem('currPicNum')) {
         localStorage.setItem('currPicNum', '0');
     }

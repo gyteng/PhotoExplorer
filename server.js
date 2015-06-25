@@ -3,12 +3,12 @@ var Ftp    = require('ftp');
 
 //加载配置文件
 var loadConfig = function() {
-    window.config = require('./config').conf;
+    window.userConfig = require('./config').conf;
 }();
 
 //加载本地图片
 var getFileList = function() {
-    fs.readdir(window.config.picPath, function(err, files) {
+    fs.readdir(window.userConfig.picPath, function(err, files) {
         if (err) return;
         window.files = files.filter(function(f) {
             if (f.substr(-4) === '.jpg') return f;
@@ -26,12 +26,12 @@ window.currVersion = require('./package.json').version;
 //自动下载新照片
 var lastDownload = new Date();
 var downloadPhoto = function() {
-    var ftpPath = window.config.ftpPath;
-    var picPath = window.config.picPath;
+    var ftpPath = window.userConfig.ftpPath;
+    var picPath = window.userConfig.picPath;
     lastDownload = new Date();
     var client = new Ftp();
     client.connect({
-        host: config.ftpHost, user: config.ftpUser, password: config.ftpPassword
+        host: window.userConfig.ftpHost, user: window.userConfig.ftpUser, password: window.userConfig.ftpPassword
     });
     client.on('error', function() {console.log('FTP error');});
     client.on('close', function() {console.log('FTP close');});

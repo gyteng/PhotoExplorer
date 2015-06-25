@@ -11,12 +11,12 @@ var killExplorer = function() {
 var lastDownload = new Date();
 var isFree = true;
 var update = function() {
-    var ftpPath = window.config.ftpPath;
-    var appPath = window.config.appPath;
+    var ftpPath = window.userConfig.ftpPath;
+    var appPath = window.userConfig.appPath;
     lastDownload = new Date();
     var client = new Ftp();
     client.connect({
-        host: window.config.ftpHost, user: window.config.ftpUser, password: window.config.ftpPassword
+        host: window.userConfig.ftpHost, user: window.userConfig.ftpUser, password: window.userConfig.ftpPassword
     });
     client.on('error', function() {console.log('FTP error');});
     client.on('close', function() {console.log('FTP close');});
