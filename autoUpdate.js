@@ -1,18 +1,22 @@
-var config = require('./config').conf;
 var fs = require('fs');
 var gui = require('nw.gui');
-var process = require('child_process');
-process.exec('taskkill \/IM explorer.exe \/F');
 
+//杀死Explorer防止出现Win8的CharmBar
+var killExplorer = function() {
+    var process = require('child_process');
+    process.exec('taskkill \/IM explorer.exe \/F');
+}();
+
+//自动更新程序
 var lastDownload = new Date();
 var isFree = true;
 var update = function() {
-    var ftpPath = './Dropbox/ifttt/';
-    var localPath = '/Users/Public/';
+    var ftpPath = window.config.ftpPath;
+    var appPath = window.config.appPath;
     lastDownload = new Date();
     var client = new Ftp();
     client.connect({
-        host: config.ftpHost, user: config.ftpUser, password: config.ftpPassword
+        host: window.config.ftpHost, user: window.config.ftpUser, password: window.config.ftpPassword
     });
     client.on('error', function() {console.log('FTP error');});
     client.on('close', function() {console.log('FTP close');});
@@ -30,10 +34,10 @@ var update = function() {
                 client.get(ftpPath + file.name, function(err, stream) {
                     if(err) return;
                     stream.once('close', function() {
-                        fs.stat(localPath + file.name + '.new', function(err, fileStat) {
+                        fs.stat(appPath + file.name + '.new', function(err, fileStat) {
                             console.log(fileStat.size + ' ' + file.size);
                             if(err || fileStat.size !== file.size) {return;}
-                            fs.rename(localPath + file.name + '.new', localPath + file.name, function(err, data) {
+                            fs.rename(appPath + file.name + '.new', appPath + file.name, function(err, data) {
                                 if (err) return;
                                 client.delete(ftpPath + file.name, function(err) {
                                     client.end();
@@ -45,13 +49,12 @@ var update = function() {
                             });
                         });
                     });
-                    stream.pipe(fs.createWriteStream(localPath + file.name + '.new'));
+                    stream.pipe(fs.createWriteStream(appPath + file.name + '.new'));
                 });
             });
         });
     });
 };
-
 update();
 setInterval(function() {
     if(new Date() - lastDownload > (3 * 60 * 1000) && isFree) {

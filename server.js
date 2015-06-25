@@ -1,10 +1,15 @@
-var config = require('./config').conf;
-var fs = require('fs');
-var Ftp = require('ftp');
+var fs     = require('fs');
+var Ftp    = require('ftp');
+
+//加载配置文件
+var loadConfig = function() {
+    window.config = require('./config').conf;
+}();
+
+//加载本地图片
 var getFileList = function() {
-    fs.readdir('/Users/Public/pic/large', function(err, files) {
+    fs.readdir(window.config.picPath, function(err, files) {
         if (err) return;
-        console.log(files);
         window.files = files.filter(function(f) {
             if (f.substr(-4) === '.jpg') return f;
         });
@@ -15,13 +20,14 @@ setInterval(function() {
     getFileList();
 }, 5000);
 
-var pkg = require('./package.json');
-window.currVersion = pkg.version;
+//获取版本号
+window.currVersion = require('./package.json').version;
 
+//自动下载新照片
 var lastDownload = new Date();
 var downloadPhoto = function() {
-    var ftpPath = './Dropbox/ifttt/';
-    var localPath = '/Users/Public/';
+    var ftpPath = window.config.ftpPath;
+    var picPath = window.config.picPath;
     lastDownload = new Date();
     var client = new Ftp();
     client.connect({
@@ -44,7 +50,7 @@ var downloadPhoto = function() {
                     if(err) return;
                     console.log('Download: ' + file.name);
                     stream.once('close', function() {
-                        fs.stat(localPath + 'pic/large/' + file.name, function(err, fileStat) {
+                        fs.stat(picPath + file.name, function(err, fileStat) {
                             console.log(fileStat.size + ' ' + file.size);
                             if(err || fileStat.size !== file.size) {return;}
                             console.log('Del');
@@ -54,13 +60,12 @@ var downloadPhoto = function() {
                             });
                         });
                     });
-                    stream.pipe(fs.createWriteStream(localPath + 'pic/large/' + file.name));
+                    stream.pipe(fs.createWriteStream(picPath + file.name));
                 });
             });
         });
     });
 };
-
 downloadPhoto();
 setInterval(function() {
     if(new Date() - lastDownload > 180000) {
