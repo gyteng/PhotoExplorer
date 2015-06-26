@@ -7,6 +7,9 @@
 <div ng-click="playAndPause();" style="position: absolute; top: 11px; right: 11px;">
     <i ng-class="playAndPauseClass"></i>
 </div>
+<div style="position: absolute; bottom: 1px; right: 1px;">
+    {{picNum}} / {{files.length}}
+</div>
 <div class="box" ng-hide="hidePic">
     <img id="currPic" ng-src="{{userConfig.picPath+fileName}}" ng-style="imgStyle" imageonload="imageOnLoad();" ng-swipe-left="nextPhoto();"/>
 </div>

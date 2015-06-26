@@ -141,7 +141,9 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     startInterval();
     
     $scope.nextPhoto = function() {
-        $interval.cancel($scope.interval);
+        if($scope.interval) {
+            $interval.cancel($scope.interval);
+        }
         startInterval();
         $scope.hidePic = true;
         $timeout(function() {$scope.hidePic = false;}, 500);
@@ -156,6 +158,7 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
                 i = (($scope.files.length === (+localStorage.getItem('currPicNum')) + 1) ? 0 : (+localStorage.getItem('currPicNum') + 1));
             }
             $scope.fileName = $scope.files[i];
+            $scope.picNum = i + 1;
             localStorage.setItem('currPicNum', i + '');
             localStorage.setItem('currPicName', $scope.files[i]);
         }, 250);
@@ -201,6 +204,7 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         $state.go('gallery');
     };
 }).controller('SettingController', function($scope, $state, $window) {
+    console.log($window.currVersion);
     $scope.version = $window.currVersion;
     $scope.randomClass = ((localStorage.getItem('isRandom') === 'true') ? 'fa fa-check-square-o fa-4x fa-fw' : 'fa fa-square-o fa-4x fa-fw');
     $scope.random = function() {

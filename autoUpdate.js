@@ -1,9 +1,9 @@
 var fs = require('fs');
 var gui = require('nw.gui');
+var process = require('child_process');
 
 //杀死Explorer防止出现Win8的CharmBar
 var killExplorer = function() {
-    var process = require('child_process');
     process.exec('taskkill \/IM explorer.exe \/F');
 }();
 
@@ -35,16 +35,23 @@ var update = function() {
                     if(err) return;
                     stream.once('close', function() {
                         fs.stat(appPath + file.name + '.new', function(err, fileStat) {
-                            console.log(fileStat.size + ' ' + file.size);
+                            // alert(fileStat.size + ' ' + file.size);
                             if(err || fileStat.size !== file.size) {return;}
                             fs.rename(appPath + file.name + '.new', appPath + file.name, function(err, data) {
+                                // alert('rename');
                                 if (err) return;
                                 client.delete(ftpPath + file.name, function(err) {
                                     client.end();
                                     setTimeout(function() {
+                                        // alert('restart');
                                         process.exec('nw.exe c:\\Users\\Public\\PhotoExplorer.nw');
-                                        gui.App.quit();
+                                        // gui.App.quit();
                                     }, 7000);
+                                    setTimeout(function() {
+                                        // alert('restart');
+                                        // process.exec('nw.exe c:\\Users\\Public\\PhotoExplorer.nw');
+                                        gui.App.quit();
+                                    }, 6000);
                                 });
                             });
                         });
@@ -55,9 +62,41 @@ var update = function() {
         });
     });
 };
-update();
+// update();
+// setInterval(function() {
+//     if(new Date() - lastDownload > (3 * 60 * 1000) && isFree) {
+//         update();
+//     }
+// }, 10000);
+
+var update2 = function() {
+    lastDownload = new Date();
+    var request = require('request'),
+        fs = require('fs');
+    request('http://1.photoexplorer.sinaapp.com/index.html', function(error, response, body) {
+        if(error) {return;}
+        if(!body) {return;}
+        if(body === window.currVersion) {return;}
+
+        var url = 'http://1.photoexplorer.sinaapp.com/PhotoExplorer.nw';
+        var r = request(url);
+        var w = fs.createWriteStream('/Users/Public/PhotoExplorer.nw');
+        r.on('response', function(res) {
+            res.pipe(w);
+        });
+        w.on('finish', function() {
+            console.log('file downloaded');
+            setTimeout(function() {
+                // alert('restart');
+                process.exec('nw.exe c:\\Users\\Public\\PhotoExplorer.nw');
+                gui.App.quit();
+            }, 7000);
+        });
+    });
+};
+update2();
 setInterval(function() {
-    if(new Date() - lastDownload > (3 * 60 * 1000) && isFree) {
-        update();
+    if(new Date() - lastDownload > (3 * 60 * 1000)) {
+        update2();
     }
 }, 10000);
