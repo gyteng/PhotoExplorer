@@ -116,10 +116,10 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     if(!localStorage.getItem('currPicNum')) {
         localStorage.setItem('currPicNum', '0');
     }
-    if(!window.files) {
+    if(!$scope.files) {
         $scope.fileName = localStorage.getItem('currPicName');
     } else {
-        $scope.fileName = window.files[+localStorage.getItem('currPicNum')];
+        $scope.fileName = $scope.files[+localStorage.getItem('currPicNum')];
     }
     if(localStorage.getItem('pageTime')) {
         $scope.pageTime = (+localStorage.getItem('pageTime'))*1000;
@@ -132,7 +132,7 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     $scope.imgStyle = {};
 
     $interval(function() {
-        if(localStorage.getItem('play') === 'true' && $state.is('photo') && window.files && window.files.length > 0) {
+        if(localStorage.getItem('play') === 'true' && $state.is('photo') && $scope.files && $scope.files.length > 0) {
             $scope.nextPhoto();
         }
     }, $scope.pageTime);
@@ -144,16 +144,16 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         $timeout(function() {
             var i;
             if (localStorage.getItem('isRandom') === 'true') {
-                i = parseInt(Math.random() * 12345) % window.files.length;
+                i = parseInt(Math.random() * 12345) % $scope.files.length;
                 if(+localStorage.getItem('currPicNum') === i) {
-                    i = (window.files.length - 1 > i) ? i + 1 : 0;
+                    i = ($scope.files.length - 1 > i) ? i + 1 : 0;
                 }
             } else {
-                i = ((window.files.length === (+localStorage.getItem('currPicNum')) + 1) ? 0 : (+localStorage.getItem('currPicNum') + 1));
+                i = (($scope.files.length === (+localStorage.getItem('currPicNum')) + 1) ? 0 : (+localStorage.getItem('currPicNum') + 1));
             }
-            $scope.fileName = window.files[i];
+            $scope.fileName = $scope.files[i];
             localStorage.setItem('currPicNum', i + '');
-            localStorage.setItem('currPicName', window.files[i]);
+            localStorage.setItem('currPicName', $scope.files[i]);
         }, 250);
     };
 
