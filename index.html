@@ -131,14 +131,18 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     var img = {};
     $scope.imgStyle = {};
 
-    $interval(function() {
-        if(localStorage.getItem('play') === 'true' && $state.is('photo') && $scope.files && $scope.files.length > 0) {
-            $scope.nextPhoto();
-        }
-    }, $scope.pageTime);
-
+    var startInterval = function() {
+        $scope.interval = $interval(function() {
+            if (localStorage.getItem('play') === 'true' && $state.is('photo') && $scope.files && $scope.files.length > 0) {
+                $scope.nextPhoto();
+            }
+        }, $scope.pageTime);
+    };
+    startInterval();
+    
     $scope.nextPhoto = function() {
-        console.log(localStorage.getItem('currPicNum'));
+        $interval.cancel($scope.interval);
+        startInterval();
         $scope.hidePic = true;
         $timeout(function() {$scope.hidePic = false;}, 500);
         $timeout(function() {

@@ -3,7 +3,7 @@
     "main": "index.html",
     "version": "0.0.12",
     "window": {
-        "fullscreen": true,
+        "fullscreen": false,
         "toolbar": true,
         "width": 1280,
         "height": 800
