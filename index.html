@@ -327,27 +327,29 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         }, 250);
     };
 
-    var img = {};
-    $scope.imgStyle = {};
-    $scope.imageOnLoad = function() {
+    
+    $scope.imgStyle = [];
+    $scope.imageOnLoad = function(num) {
+        var img = {};
         img = {
-            naturalWidth: document.getElementById('currPic').naturalWidth,
-            naturalHeight: document.getElementById('currPic').naturalHeight
+            naturalWidth: document.getElementById(num).naturalWidth,
+            naturalHeight: document.getElementById(num).naturalHeight
         };
+        $scope.imgStyle[num] = {};
         if (img.naturalWidth / img.naturalHeight > 1.6) {
-            $scope.imgStyle.width = '320px';
-            $scope.imgStyle.height = img.naturalHeight / img.naturalWidth * 320 + 'px';
-            $scope.imgStyle['margin-left'] = '0px';
-            $scope.imgStyle['margin-right'] = '0px';
-            $scope.imgStyle['margin-top'] = (200 - img.naturalHeight / img.naturalWidth * 320) / 2 + 'px';
-            $scope.imgStyle['margin-bottom'] = (200 - img.naturalHeight / img.naturalWidth * 320) / 2 + 'px';
+            $scope.imgStyle[num].width = '320px';
+            $scope.imgStyle[num].height = img.naturalHeight / img.naturalWidth * 320 + 'px';
+            $scope.imgStyle[num]['margin-left'] = '0px';
+            $scope.imgStyle[num]['margin-right'] = '0px';
+            $scope.imgStyle[num]['margin-top'] = (200 - img.naturalHeight / img.naturalWidth * 320) / 2 + 'px';
+            $scope.imgStyle[num]['margin-bottom'] = (200 - img.naturalHeight / img.naturalWidth * 320) / 2 + 'px';
         } else {
-            $scope.imgStyle.width = img.naturalWidth / img.naturalHeight * 200 + 'px';
-            $scope.imgStyle.height = '200px';
-            $scope.imgStyle['margin-left'] = (320 - img.naturalWidth / img.naturalHeight * 200) / 2 + 'px';
-            $scope.imgStyle['margin-right'] = (320 - img.naturalWidth / img.naturalHeight * 200) / 2 + 'px';
-            $scope.imgStyle['margin-top'] = '0px';
-            $scope.imgStyle['margin-bottom'] = '0px';
+            $scope.imgStyle[num].width = img.naturalWidth / img.naturalHeight * 200 + 'px';
+            $scope.imgStyle[num].height = '200px';
+            $scope.imgStyle[num]['margin-left'] = (320 - img.naturalWidth / img.naturalHeight * 200) / 2 + 'px';
+            $scope.imgStyle[num]['margin-right'] = (320 - img.naturalWidth / img.naturalHeight * 200) / 2 + 'px';
+            $scope.imgStyle[num]['margin-top'] = '0px';
+            $scope.imgStyle[num]['margin-bottom'] = '0px';
         }
     };
 });

@@ -10,8 +10,8 @@
 <div>
     <table class="gallery" ng-hide="hidePic">
         <tr ng-repeat="lines in box" style="height: 200px;">
-            <td ng-repeat="line in lines">
-                <img id="currPic" ng-src="{{userConfig.picPath+line.fileName}}" ng-click="toPhoto(line.fileName, line.num);" ng-style="imgStyle" imageonload="imageOnLoad();"/>
+            <td ng-repeat="line in lines" style="width: 320px;">
+                <img id="{{line.num}}" ng-src="{{userConfig.picPath+line.fileName}}" ng-click="toPhoto(line.fileName, line.num);" ng-style="imgStyle[line.num]" imageonload="imageOnLoad(line.num);"/>
             </td>
         </tr>
     </table>
