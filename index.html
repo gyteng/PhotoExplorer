@@ -36,6 +36,11 @@
             padding: 0 0px;
             background: #000000;
         }
+/*        .check-element {
+            padding: 0px;
+            background: #000000;
+        }*/
+
         .gallery {
             z-index: -1000;
             position: absolute;
@@ -47,8 +52,8 @@
 
             background: #000000;
 
-            -webkit-transition: all linear 0.3s;
-            transition: all linear 0.3s;
+            -webkit-transition: all linear 0.25s;
+            transition: all linear 0.25s;
             line-height: 20px;
             opacity: 1;
         }
@@ -58,10 +63,7 @@
             padding: 0 0px;
             background: #000000;
         }
-        .check-element {
-            padding: 0px;
-            background: #000000;
-        }
+        
     </style>
 </head>
 <body style="overflow: hidden;">
@@ -108,10 +110,16 @@ app.directive('imageonload', function() {
     };
 });
 app.controller('PhotoController', function($scope, $interval, $timeout, $state, $window) {
+    $scope.hidePic = true;
     $scope.userConfig = $window.userConfig;
     $scope.$watch(function() {return $window.files;}, function() {
         $scope.files = $window.files;
     });
+    if($scope.hidePic) {
+        $timeout(function() {
+            $scope.hidePic = false;
+        }, 250);
+    }
 
     if(!localStorage.getItem('currPicNum')) {
         localStorage.setItem('currPicNum', '0');
@@ -121,6 +129,7 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     } else {
         $scope.fileName = $scope.files[+localStorage.getItem('currPicNum')];
     }
+    $scope.picNum = +localStorage.getItem('currPicNum') + 1;
     if(localStorage.getItem('pageTime')) {
         $scope.pageTime = (+localStorage.getItem('pageTime'))*1000;
     } else {
@@ -149,13 +158,14 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         $timeout(function() {$scope.hidePic = false;}, 500);
         $timeout(function() {
             var i;
+            var currPicNum = +localStorage.getItem('currPicNum');
             if (localStorage.getItem('isRandom') === 'true') {
                 i = parseInt(Math.random() * 12345) % $scope.files.length;
-                if(+localStorage.getItem('currPicNum') === i) {
-                    i = ($scope.files.length - 1 > i) ? i + 1 : 0;
+                if(currPicNum === i) {
+                    i = (i < $scope.files.length - 1 ) ? i + 1 : 0;
                 }
             } else {
-                i = (($scope.files.length === (+localStorage.getItem('currPicNum')) + 1) ? 0 : (+localStorage.getItem('currPicNum') + 1));
+                i = (($scope.files.length === currPicNum + 1) ? 0 : currPicNum + 1);
             }
             $scope.fileName = $scope.files[i];
             $scope.picNum = i + 1;
@@ -198,13 +208,24 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         }
     };
     $scope.settings = function() {
-        $state.go('settings');
+        if($scope.interval) {
+            $interval.cancel($scope.interval);
+        }
+        $scope.hidePic = true;
+        $timeout(function() {
+            $state.go('settings');
+        }, 250);
     };
     $scope.toGallery = function() {
-        $state.go('gallery');
+        if($scope.interval) {
+            $interval.cancel($scope.interval);
+        }
+        $scope.hidePic = true;
+        $timeout(function() {
+            $state.go('gallery');
+        }, 250);
     };
 }).controller('SettingController', function($scope, $state, $window) {
-    console.log($window.currVersion);
     $scope.version = $window.currVersion;
     $scope.randomClass = ((localStorage.getItem('isRandom') === 'true') ? 'fa fa-check-square-o fa-4x fa-fw' : 'fa fa-square-o fa-4x fa-fw');
     $scope.random = function() {
@@ -255,40 +276,79 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     };
     setClass(+localStorage.getItem('pageTime'));
 }).controller('GalleryController', function($scope, $state, $window, $timeout) {
+    $scope.hidePic = true;
+    $scope.userConfig = $window.userConfig;
+    $scope.$watch(function() {return $window.files;}, function() {
+        $scope.files = $window.files;
+    });
     $scope.pages = Math.ceil($window.files.length / 16);
-    $scope.currPage = 1;
+    if(localStorage.getItem('currPicNum')) {
+        $scope.currPage = Math.ceil(+localStorage.getItem('currPicNum') / 16);
+    } else {
+        $scope.currPage = 1;
+    }
     $scope.box = [[], [], [], []];
     $scope.$watch('currPage', function() {
         $scope.box = [[], [], [], []];
         $scope.hidePic = true;
         $timeout(function() {
             $scope.hidePic = false;
-        }, 100);
+        }, 500);
         $timeout(function() {
-            $window.files.slice($scope.currPage * 16 - 16, $scope.currPage * 16).forEach(function(f) {
-                console.log(f);
-                if($scope.box[0].length < 4) {$scope.box[0].push({fileName: f}); return;}
-                if($scope.box[1].length < 4) {$scope.box[1].push({fileName: f}); return;}
-                if($scope.box[2].length < 4) {$scope.box[2].push({fileName: f}); return;}
-                if($scope.box[3].length < 4) {$scope.box[3].push({fileName: f}); return;}
+            $window.files.slice($scope.currPage * 16 - 16, $scope.currPage * 16).forEach(function(f, num) {
+                if($scope.box[0].length < 4) {$scope.box[0].push({fileName: f, num: num}); return;}
+                if($scope.box[1].length < 4) {$scope.box[1].push({fileName: f, num: num}); return;}
+                if($scope.box[2].length < 4) {$scope.box[2].push({fileName: f, num: num}); return;}
+                if($scope.box[3].length < 4) {$scope.box[3].push({fileName: f, num: num}); return;}
             });
-        }, 200);
+        }, 250);
     });
     
     $scope.home = function() {
         $state.go('photo');
     };
-    $scope.toPhoto = function(fileName) {
+    $scope.toPhoto = function(fileName, num) {
         localStorage.setItem('currPicName', fileName);
+        localStorage.setItem('currPicNum', ($scope.currPage * 16 - 16 + num) + '');
         $state.go('photo');
     };
     $scope.previous = function() {
         if($scope.currPage === 1) return;
-        $scope.currPage--;
+        $scope.hidePic = true;
+        $timeout(function() {
+            $scope.currPage--;
+        }, 250);
     };
     $scope.next = function() {
         if($scope.currPage === $scope.pages) return;
-        $scope.currPage++;
+        $scope.hidePic = true;
+        $timeout(function() {
+            $scope.currPage++;
+        }, 250);
+    };
+
+    var img = {};
+    $scope.imgStyle = {};
+    $scope.imageOnLoad = function() {
+        img = {
+            naturalWidth: document.getElementById('currPic').naturalWidth,
+            naturalHeight: document.getElementById('currPic').naturalHeight
+        };
+        if (img.naturalWidth / img.naturalHeight > 1.6) {
+            $scope.imgStyle.width = '320px';
+            $scope.imgStyle.height = img.naturalHeight / img.naturalWidth * 320 + 'px';
+            $scope.imgStyle['margin-left'] = '0px';
+            $scope.imgStyle['margin-right'] = '0px';
+            $scope.imgStyle['margin-top'] = (200 - img.naturalHeight / img.naturalWidth * 320) / 2 + 'px';
+            $scope.imgStyle['margin-bottom'] = (200 - img.naturalHeight / img.naturalWidth * 320) / 2 + 'px';
+        } else {
+            $scope.imgStyle.width = img.naturalWidth / img.naturalHeight * 200 + 'px';
+            $scope.imgStyle.height = '200px';
+            $scope.imgStyle['margin-left'] = (320 - img.naturalWidth / img.naturalHeight * 200) / 2 + 'px';
+            $scope.imgStyle['margin-right'] = (320 - img.naturalWidth / img.naturalHeight * 200) / 2 + 'px';
+            $scope.imgStyle['margin-top'] = '0px';
+            $scope.imgStyle['margin-bottom'] = '0px';
+        }
     };
 });
 

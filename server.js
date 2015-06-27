@@ -24,11 +24,13 @@ setInterval(function() {
 window.currVersion = require('./package.json').version;
 
 //自动下载新照片
-var lastDownload = new Date();
+var lastDownloadPhotos = new Date();
+var downloadPhotoBusy = false;
 var downloadPhoto = function() {
+    console.log('Down');
     var ftpPath = window.userConfig.ftpPath;
     var picPath = window.userConfig.picPath;
-    lastDownload = new Date();
+    lastDownloadPhotos = new Date();
     var client = new Ftp();
     client.connect({
         host: window.userConfig.ftpHost, user: window.userConfig.ftpUser, password: window.userConfig.ftpPassword
@@ -45,6 +47,8 @@ var downloadPhoto = function() {
                 if(f.name.substr(-4) === '.jpg') return f;
             });
             if(filter.length === 0) return;
+            filter = [filter[0]];
+            downloadPhotoBusy = true;
             filter.forEach(function(file) {
                 client.get(ftpPath + file.name, function(err, stream) {
                     if(err) return;
@@ -57,6 +61,7 @@ var downloadPhoto = function() {
                             client.delete(ftpPath + file.name, function(err) {
                                 console.log('Delete: ' + file.name);
                                 client.end();
+                                downloadPhotoBusy = false;
                             });
                         });
                     });
@@ -68,7 +73,7 @@ var downloadPhoto = function() {
 };
 downloadPhoto();
 setInterval(function() {
-    if(new Date() - lastDownload > 180000) {
+    if(new Date() - lastDownloadPhotos > 90 * 1000 && !downloadPhotoBusy) {
         downloadPhoto();
     }
 }, 5000);
