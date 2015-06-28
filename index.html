@@ -283,7 +283,7 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     });
     $scope.pages = Math.ceil($window.files.length / 16);
     if(localStorage.getItem('currPicNum')) {
-        $scope.currPage = Math.ceil(+localStorage.getItem('currPicNum') / 16);
+        $scope.currPage = Math.ceil((+localStorage.getItem('currPicNum') + 1) / 16);
     } else {
         $scope.currPage = 1;
     }
@@ -327,7 +327,6 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         }, 250);
     };
 
-    
     $scope.imgStyle = [];
     $scope.imageOnLoad = function(num) {
         var img = {};
