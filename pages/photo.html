@@ -11,5 +11,5 @@
     {{picNum}} / {{files.length}}
 </div>
 <div class="box" ng-hide="hidePic">
-    <img id="currPic" ng-src="{{userConfig.picPath+fileName}}" ng-style="imgStyle" imageonload="imageOnLoad();" ng-swipe-left="nextPhoto();"/>
+    <img id="currPic" ng-src="{{userConfig.picPath+fileName}}" ng-style="imgStyle" imageonload="imageOnLoad();" ng-swipe-left="nextPhoto();" ng-swipe-right="previousPhoto();"/>
 </div>

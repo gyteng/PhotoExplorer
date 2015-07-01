@@ -33,7 +33,7 @@ var downloadPhoto = function() {
     var timer = setTimeout(function() {
         downloadPhotoBusy = false;
         console.log('downloadPhoto fail');
-    }, 60 * 1000);
+    }, 5 * 60 * 1000);
     var ftpPath = window.userConfig.ftpPath;
     var picPath = window.userConfig.picPath;
     var tempPath = window.userConfig.tempPath;

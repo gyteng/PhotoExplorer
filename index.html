@@ -148,6 +148,26 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         }, $scope.pageTime);
     };
     startInterval();
+
+    $scope.previousPhoto = function() {
+        if (localStorage.getItem('isRandom') === 'false') {
+            if ($scope.interval) {
+                $interval.cancel($scope.interval);
+            }
+            startInterval();
+            $scope.hidePic = true;
+            $timeout(function() {$scope.hidePic = false; }, 500);
+            $timeout(function() {
+                var i;
+                var currPicNum = +localStorage.getItem('currPicNum');
+                i = ((currPicNum === 0) ? ($scope.files.length - 1) : (currPicNum - 1));
+                $scope.fileName = $scope.files[i];
+                $scope.picNum = i + 1;
+                localStorage.setItem('currPicNum', i + '');
+                localStorage.setItem('currPicName', $scope.files[i]);
+            }, 250);
+        }
+    };
     
     $scope.nextPhoto = function() {
         if($scope.interval) {
