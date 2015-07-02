@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="photo">
 <head>
-    <title>Photo Explorer</title>
+    <title>Photo Explorer</title>    
     <script src="./server.js"></script>
     <script src="./autoUpdate.js"></script>
     <link rel="stylesheet" href="./bower_components/components-font-awesome/css/font-awesome.min.css">
@@ -13,6 +13,7 @@
     <script src="./bower_components/ngDialog/js/ngDialog.min.js"></script>
     <script src="./bower_components/angular-touch/angular-touch.min.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="./bower_components/angular-soundmanager2/dist/angular-soundmanager2.min.js"></script>
     <style type="text/css">
         .box {
             z-index: -1000;
@@ -33,14 +34,9 @@
         .box.ng-hide {
             line-height: 0;
             opacity: 0;
-            padding: 0 0px;
+            padding: 0px 0px;
             background: #000000;
         }
-/*        .check-element {
-            padding: 0px;
-            background: #000000;
-        }*/
-
         .gallery {
             z-index: -1000;
             position: absolute;
@@ -65,6 +61,7 @@
         }
         
     </style>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 </head>
 <body style="overflow: hidden;">
     <div ui-view></div>
@@ -78,7 +75,7 @@
     //     "frame":false
     // }
 
-var app = angular.module('photo', ['ui.bootstrap', 'ngDialog', 'ui.router', 'ngTouch', 'ngAnimate']);
+var app = angular.module('photo', ['ui.bootstrap', 'ngDialog', 'ui.router', 'ngTouch', 'ngAnimate', 'angularSoundManager']);
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/photo");
     $stateProvider
@@ -149,6 +146,7 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     };
     startInterval();
 
+    var photoHistory = [];
     $scope.previousPhoto = function() {
         if (localStorage.getItem('isRandom') === 'false') {
             if ($scope.interval) {
@@ -166,6 +164,24 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
                 localStorage.setItem('currPicNum', i + '');
                 localStorage.setItem('currPicName', $scope.files[i]);
             }, 250);
+        } else {
+            var i = photoHistory.pop();
+            if(i) {
+                if ($scope.interval) {
+                    $interval.cancel($scope.interval);
+                }
+                startInterval();
+                $scope.hidePic = true;
+                $timeout(function() {
+                    $scope.hidePic = false;
+                }, 500);
+                $timeout(function() {
+                    $scope.fileName = $scope.files[i];
+                    $scope.picNum = i + 1;
+                    localStorage.setItem('currPicNum', i + '');
+                    localStorage.setItem('currPicName', $scope.files[i]);
+                }, 250);
+            } 
         }
     };
     
@@ -180,6 +196,8 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
             var i;
             var currPicNum = +localStorage.getItem('currPicNum');
             if (localStorage.getItem('isRandom') === 'true') {
+                photoHistory.push(currPicNum);
+                if(photoHistory.length > 25) {photoHistory.shift();}
                 i = parseInt(Math.random() * 12345) % $scope.files.length;
                 if(currPicNum === i) {
                     i = (i < $scope.files.length - 1 ) ? i + 1 : 0;
