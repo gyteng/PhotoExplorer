@@ -68,31 +68,29 @@
 </body>
 
 <script>
-// 'use strict';
-    // "window": {
-    //     "fullscreen": true,
-    //     "toolbar":false,
-    //     "frame":false
-    // }
-
 var app = angular.module('photo', ['ui.bootstrap', 'ngDialog', 'ui.router', 'ngTouch', 'ngAnimate', 'angularSoundManager']);
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/photo");
     $stateProvider
         .state('photo', {
-            url: "/photo",
-            templateUrl: "./pages/photo.html",
-            controller: "PhotoController"
+            url: '/photo',
+            templateUrl: './pages/photo.html',
+            controller: 'PhotoController'
         })
         .state('settings', {
-            url: "/settings",
-            templateUrl: "./pages/settings.html",
-            controller: "SettingController"
+            url: '/settings',
+            templateUrl: './pages/settings.html',
+            controller: 'SettingController'
         })
         .state('gallery', {
             url: "/gallery",
-            templateUrl: "./pages/gallery.html",
-            controller: "GalleryController"
+            templateUrl: './pages/gallery.html',
+            controller: 'GalleryController'
+        })
+        .state('weather', {
+            url: '/weather',
+            templateUrl: './pages/weather.html',
+            controller: 'WeatherController'
         })
     ;
 });
@@ -263,6 +261,15 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
             $state.go('gallery');
         }, 250);
     };
+    $scope.toWeather = function() {
+        if($scope.interval) {
+            $interval.cancel($scope.interval);
+        }
+        $scope.hidePic = true;
+        $timeout(function() {
+            $state.go('weather');
+        }, 250);
+    };
 }).controller('SettingController', function($scope, $state, $window) {
     $scope.version = $window.currVersion;
     $scope.randomClass = ((localStorage.getItem('isRandom') === 'true') ? 'fa fa-check-square-o fa-4x fa-fw' : 'fa fa-square-o fa-4x fa-fw');
@@ -392,4 +399,5 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
 });
 
 </script>
+<script src="./controller/weather.js"></script>
 </html>
