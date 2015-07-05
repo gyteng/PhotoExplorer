@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html ng-app="photo">
 <head>
-    <title>Photo Explorer</title>    
+    <title>Photo Explorer</title>
+    <meta charset="UTF-8">  
     <script src="./server.js"></script>
     <script src="./autoUpdate.js"></script>
     <link rel="stylesheet" href="./bower_components/components-font-awesome/css/font-awesome.min.css">
@@ -102,6 +103,29 @@ app.directive('imageonload', function() {
                 scope.$apply(attrs.imageonload);
             });
         }
+    };
+});
+app.filter('weather', function() {
+    var table = [{
+        eng: 'mostly cloudy',
+        chn: '阴天'
+    }, {
+        eng: 'partly cloudy',
+        chn: '多云'
+    }, {
+        eng: 'showers',
+        chn: '阵雨'
+    }];
+    return function(input) {
+        var weather = input;
+        var pre = '';
+        if(input.substr(0, 3).toLowerCase() === 'pm ') {input = input.substr(3); pre = '夜间';}
+        if(input.substr(0, 3).toLowerCase() === 'am ') {input = input.substr(3); pre = '白天';}
+        table.forEach(function(t) {
+            
+            if(t.eng.toLowerCase() === input.toLowerCase()) {weather = pre + t.chn; return;}
+        });
+        return weather;
     };
 });
 app.controller('PhotoController', function($scope, $interval, $timeout, $state, $window) {

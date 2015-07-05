@@ -1,11 +1,11 @@
 <div ng-click="home();" style="position: absolute; top: 11px; left: 11px;">
     <i class="fa fa-home fa-4x"></i>
 </div>
-<div style="font-size: 48px; margin-top: 280px; text-align:center;" ng-hide="hideWeather">
+<div style="font-family: 微软雅黑; font-size: 64px; margin-top: 240px; margin-left: 120px;" ng-hide="hideWeather">
     <!-- 天气预报功能正在开发中<br>请点击左上角返回 -->
     <table>
         <tr ng-repeat="day in days">
-            <td>{{day.date}} {{day.high}} {{day.low}} {{day.text}}</td>
+            <td>{{day.day}}  {{day.low}}/{{day.high}}℃  {{day.text | weather}}</td>
         </tr>
     </table>
 </div>

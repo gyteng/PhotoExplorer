@@ -12,7 +12,10 @@ app.controller('WeatherController', function($scope, $state, $window, $http) {
         //     format: 'json'
         // }
     }).success(function(data) {
-        $scope.days = data.query.results.channel[0].item.forecast;
+        $scope.days = data.query.results.channel[0].item.forecast.slice(0, 3);
+        $scope.days[0].day = '今天';
+        $scope.days[1].day = '明天';
+        $scope.days[2].day = '后天';
         $scope.hideWeather = false;
     });
 
