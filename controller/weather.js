@@ -1,4 +1,4 @@
-app.controller('WeatherController', function($scope, $state, $window, $http) {
+app.controller('WeatherController', function($scope, $state, $window, $http, $interval) {
     $scope.home = function() {
         $state.go('photo');
     };
@@ -12,6 +12,7 @@ app.controller('WeatherController', function($scope, $state, $window, $http) {
         //     format: 'json'
         // }
     }).success(function(data) {
+        console.log(data);
         $scope.days = data.query.results.channel[0].item.forecast.slice(0, 3);
         $scope.days[0].day = '今天';
         $scope.days[1].day = '明天';
@@ -19,5 +20,15 @@ app.controller('WeatherController', function($scope, $state, $window, $http) {
         $scope.hideWeather = false;
     });
 
+    $scope.time = {};
+    var getTime = function() {
+        var time = new Date();
+        $scope.time.hour = time.getHours() > 9 ? time.getHours() + '' : '0' + time.getHours();
+        $scope.time.minute = time.getMinutes() > 9 ? time.getMinutes() + '' : '0' + time.getMinutes();
+    };
+    getTime();
+    $interval(function() {
+        getTime();
+    }, 1000);
 
 });

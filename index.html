@@ -107,28 +107,117 @@ app.directive('imageonload', function() {
 });
 app.filter('weather', function() {
     var table = [{
-        eng: 'mostly cloudy',
-        chn: '阴天'
+        code: 0,
+        text: '龙卷风'
     }, {
-        eng: 'partly cloudy',
-        chn: '多云'
+        code: 1,
+        text: '热带风暴'
+    },{
+        code: 2,
+        text: '暴风'
     }, {
-        eng: 'showers',
-        chn: '阵雨'
+        code: 3,
+        text: '大雷雨'
+    }, {
+        code: 4,
+        text: '雷阵雨'
+    }, {
+        code: 5,
+        text: '雨夹雪'
+    }, {
+        code: 6,
+        text: '雨夹冰雹'
+    }, {
+        code: 7,
+        text: '雪夹冰雹'
+    }, {
+        code: 8,
+        text: '冻雾雨'
+    }, {
+        code: 9,
+        text: '细雨'
+    },  {
+        code: 10,
+        text: '冻雨'
+    },  {
+        code: 11,
+        text: '阵雨'
+    }, {
+        code: 12,
+        text: '阵雨'
+    }, {
+        code: 13,
+        text: '阵雪'
+    }, {
+        code: 14,
+        text: '小阵雪'
+    }, {
+        code: 15,
+        text: '高吹雪'
+    }, {
+        code: 16,
+        text: '雨'
+    }, {
+        code: 17,
+        text: '冰雹'
+    }, {
+        code: 18,
+        text: '雨凇'
+    }, {
+        code: 19,
+        text: '粉尘'
+    }, {
+        code: 20,
+        text: '雾'
+    }, {
+        code: 21,
+        text: '薄雾'
+    }, {
+        code: 22,
+        text: '烟雾'
+    }, {
+        code: 23,
+        text: '大风'
+    }, {
+        code: 24,
+        text: '风'
+    }, {
+        code: 25,
+        text: '冷'
+    }, {
+        code: 26,
+        text: '阴天'
+    }, {
+        code: 27,
+        text: '多云'
+    }, {
+        code: 28,
+        text: '多云'
+    }, {
+        code: 29,
+        text: '局部多云'
+    }, {
+        code: 30,
+        text: '局部多远 '
+    }, {
+        code: 31,
+        text: '晴'
+    }, {
+        code: 32,
+        text: '晴'
     }];
     return function(input) {
-        var weather = input;
-        var pre = '';
-        if(input.substr(0, 3).toLowerCase() === 'pm ') {input = input.substr(3); pre = '夜间';}
-        if(input.substr(0, 3).toLowerCase() === 'am ') {input = input.substr(3); pre = '白天';}
+        var weather = '';
         table.forEach(function(t) {
-            
-            if(t.eng.toLowerCase() === input.toLowerCase()) {weather = pre + t.chn; return;}
+            if(t.code === +input) {
+                weather = t.text; 
+                return;
+            }
         });
-        return weather;
+        return weather || input;
     };
 });
-app.controller('PhotoController', function($scope, $interval, $timeout, $state, $window) {
+app.controller('PhotoController', function($scope, $interval, $timeout, $state, $window, $http) {
     $scope.hidePic = true;
     $scope.userConfig = $window.userConfig;
     $scope.$watch(function() {return $window.files;}, function() {
