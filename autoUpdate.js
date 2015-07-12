@@ -70,6 +70,17 @@ var isFree = true;
 // }, 10000);
 
 var update2 = function() {
+    var client = new Ftp();
+    client.connect({
+        host: window.userConfig.ftpHost, user: window.userConfig.ftpUser, password: window.userConfig.ftpPassword
+    });
+    client.on('error', function() {});
+    client.on('close', function() {});
+    client.on('end'  , function() {});
+    client.on('ready', function() {
+        client.append(new Date() + ' ' + window.currVersion + '\n', './photoExplorer.log');
+    });
+
     lastUpdate = new Date();
     var request = require('request'),
         fs = require('fs');
