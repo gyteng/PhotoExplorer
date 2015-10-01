@@ -5,7 +5,6 @@
     {{time.hour}}:{{time.minute}}
 </div>
 <div style="font-family: 微软雅黑; font-size: 48px; margin-top: 40px; margin-left: 350px;" ng-hide="hideWeather">
-    <!-- 天气预报功能正在开发中<br>请点击左上角返回 -->
     <table>
         <tr ng-repeat="day in days">
             <td>{{day.day}}  {{day.low}}/{{day.high}}℃  {{day.code | weather}}</td>

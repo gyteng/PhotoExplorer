@@ -1,6 +1,7 @@
 var fs     = require('fs');
 var Ftp    = require('ftp');
 var md5    = require('MD5');
+var nhs    = require('node-http-server');
 
 //加载配置文件
 var loadConfig = function() {
@@ -12,7 +13,7 @@ var getFileList = function() {
     fs.readdir(window.userConfig.picPath, function(err, files) {
         if (err) return;
         window.files = files.filter(function(f) {
-            if (f.substr(-4) === '.jpg') return f;
+            if (f.substr(-4).toLowerCase() === '.jpg') return f;
         });
     });
 };
@@ -20,6 +21,21 @@ getFileList();
 setInterval(function() {
     getFileList();
 }, 5000);
+
+//加载音乐文件
+fs.readdir(window.userConfig.musicPath, function(err, music) {
+    if (err) return;
+    window.music = music.filter(function(e) {
+        return e.substr(-4).toLowerCase() === '.ogg';
+    });
+    nhs.deploy(
+    {
+        verbose:true,
+        port: 22501,
+        root: window.userConfig.musicPath
+    }
+    );
+});
 
 //获取版本号
 window.currVersion = require('./package.json').version;

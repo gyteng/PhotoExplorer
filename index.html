@@ -93,6 +93,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: './pages/weather.html',
             controller: 'WeatherController'
         })
+        .state('music', {
+            url: '/music',
+            templateUrl: './pages/music.html',
+            controller: 'MusicController'
+        })
     ;
 });
 app.directive('imageonload', function() {
@@ -410,6 +415,15 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
             $state.go('weather');
         }, 250);
     };
+    $scope.toMusic = function() {
+        if($scope.interval) {
+            $interval.cancel($scope.interval);
+        }
+        $scope.hidePic = true;
+        $timeout(function() {
+            $state.go('music');
+        }, 250);
+    };
 }).controller('SettingController', function($scope, $state, $window) {
     $scope.version = $window.currVersion;
     $scope.randomClass = ((localStorage.getItem('isRandom') === 'true') ? 'fa fa-check-square-o fa-4x fa-fw' : 'fa fa-square-o fa-4x fa-fw');
@@ -540,4 +554,5 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
 
 </script>
 <script src="./controller/weather.js"></script>
+<script src="./controller/music.js"></script>
 </html>
