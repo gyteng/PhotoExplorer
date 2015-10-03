@@ -25,9 +25,11 @@ setInterval(function() {
 //加载音乐文件
 fs.readdir(window.userConfig.musicPath, function(err, music) {
     if (err) return;
-    window.music = music.filter(function(e) {
-        return e.substr(-4).toLowerCase() === '.ogg';
-    });
+    window.music = music.map(function(e) {
+        if(e.substr(-4).toLowerCase() === '.ogg') {
+            return {id: e, url: 'http://127.0.0.1:22501/' + e};
+        }
+    }).filter(function(e) {return e;});
     nhs.deploy(
     {
         verbose:true,

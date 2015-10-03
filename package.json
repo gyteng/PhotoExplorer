@@ -1,7 +1,7 @@
 {
     "name": "PhotoExplorer",
     "main": "index.html",
-    "version": "0.2.5",
+    "version": "0.2.13",
     "window": {
         "fullscreen": true,
         "toolbar": false,

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./bower_components/components-font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./bower_components/ngDialog/css/ngDialog.min.css">
+    <link rel="stylesheet" href="./bower_components/angular-hotkeys/build/hotkeys.min.css">
     <script src="./bower_components/angularjs/angular.min.js"></script>
     <script src="./bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
@@ -15,6 +16,7 @@
     <script src="./bower_components/angular-touch/angular-touch.min.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="./bower_components/angular-soundmanager2/dist/angular-soundmanager2.min.js"></script>
+    <script src="./bower_components/angular-hotkeys/build/hotkeys.min.js"></script>
     <style type="text/css">
         .box {
             z-index: -1000;
@@ -60,6 +62,10 @@
             padding: 0 0px;
             background: #000000;
         }
+
+        .fa-5x {
+            font-size: 192px;
+        }
         
     </style>
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
@@ -69,10 +75,15 @@
 </body>
 
 <script>
-var app = angular.module('photo', ['ui.bootstrap', 'ngDialog', 'ui.router', 'ngTouch', 'ngAnimate', 'angularSoundManager']);
+var app = angular.module('photo', ['ui.bootstrap', 'ngDialog', 'ui.router', 'ngTouch', 'ngAnimate', 'angularSoundManager', 'cfp.hotkeys']);
 app.config(function($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise("/photo");
+    $urlRouterProvider.otherwise("/home");
     $stateProvider
+        .state('home', {
+            url: '/home',
+            templateUrl: './pages/home.html',
+            controller: 'HomePageController'
+        })
         .state('photo', {
             url: '/photo',
             templateUrl: './pages/photo.html',
@@ -237,6 +248,24 @@ app.filter('weather', function() {
     }, {
         code: 41,
         text: '大雪'
+    }, {
+        code: 42,
+        text: '零星阵雪'
+    }, {
+        code: 43,
+        text: '大雪'
+    }, {
+        code: 44,
+        text: '局部多云'
+    }, {
+        code: 45,
+        text: '雷阵雨'
+    }, {
+        code: 46,
+        text: '阵雪'
+    }, {
+        code: 47,
+        text: '局部雷阵雨'
     }];
     return function(input) {
         var weather = '';
@@ -249,7 +278,10 @@ app.filter('weather', function() {
         return weather || input;
     };
 });
-app.controller('PhotoController', function($scope, $interval, $timeout, $state, $window, $http) {
+app.controller('PhotoController', function($scope, $interval, $timeout, $state, $window, $http, hotkeys) {
+
+    
+
     $scope.hidePic = true;
     $scope.userConfig = $window.userConfig;
     $scope.$watch(function() {return $window.files;}, function() {
@@ -555,4 +587,5 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
 </script>
 <script src="./controller/weather.js"></script>
 <script src="./controller/music.js"></script>
+<script src="./controller/home.js"></script>
 </html>

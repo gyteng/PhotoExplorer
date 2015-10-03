@@ -1,14 +1,35 @@
-app.controller('MusicController', function($scope, $state) {
+app.controller('MusicController', function($scope, $state, angularPlayer, $window) {
     $scope.home = function() {
         $state.go('photo');
     };
-    $scope.songs = window.music.map(function(e) {
-        console.log(e);
-        return {
-            id: e,
-            title : e,
-            artist: 'unknown',
-            url : 'http://127.0.0.1:22501/' + e
-        };
-    });
+    if(!$window.play) {
+        $window.play = true;
+        $window.music.forEach(function(e) {
+            angularPlayer.addTrack(e);
+        });
+        angularPlayer.play();
+        // $scope.playing = true;
+        if(!angularPlayer.getRepeatStatus()) {
+            angularPlayer.repeatToggle();
+        }
+    }
+
+    $scope.playAndPause = function() {
+        if($window.play) {
+            angularPlayer.pause();
+            $window.play = false;
+        } else {
+            angularPlayer.play();
+            $window.play = true;
+        }       
+    };
+    
+    $scope.next = function() {
+        $window.play = true;
+        angularPlayer.nextTrack();
+    };
+    $scope.prev = function() {
+        $window.play = true;
+        angularPlayer.prevTrack();
+    };
 });
