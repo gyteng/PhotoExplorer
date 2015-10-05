@@ -1,27 +1,23 @@
+<sound-manager>
 <div style="text-align:center;">
-    <div style="height: 250px;"></div>
+    <div style="height: 150px;"></div>
     <div>
-        <sound-manager>
-            <div>
-                <a class="btn btn-primary btn-lg" ng-click="playAndPause()">
-                    <i ng-class="randomClass"></i><span style="font-size: 72px;">播放/暂停</span>
-                </a>
-            </div>
-        </sound-manager>
+        <a class="btn btn-primary btn-lg" ng-click="playAndPause()">
+            <i ng-class="randomClass"></i><span style="font-size: 72px;">播放/暂停</span>
+        </a>
     </div>
-    <div style="height: 50px;"></div>
-    <div>
-        <sound-manager>
-            <div>
-                <a class="btn btn-primary btn-lg" ng-click="prev()">
-                    <i ng-class="randomClass"></i><span style="font-size: 72px;">上一首</span>
-                </a>
-            </div>
-            <div>
-                <a class="btn btn-primary btn-lg" ng-click="next()">
-                    <i ng-class="randomClass"></i><span style="font-size: 72px;">下一首</span>
-                </a>
-            </div>
-        </sound-manager>
-    </div>
+    <div style="height: 30px;"></div>
+    <!-- <div><span style="font-size: 72px;">{{name}}</span></div> -->
 </div>
+
+
+
+    
+
+<a class="btn btn-primary btn-lg" ng-click="prev()" style="position: absolute; top: 460px; left: 320px;">
+    <i ng-class="randomClass"></i><span style="font-size: 72px;">上一首</span>
+</a>
+<a class="btn btn-primary btn-lg" ng-click="next()" style="position: absolute; top: 460px; left: 720px;">
+    <i ng-class="randomClass"></i><span style="font-size: 72px;">下一首</span>
+</a>
+</sound-manager>

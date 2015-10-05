@@ -2,6 +2,19 @@ var fs     = require('fs');
 var Ftp    = require('ftp');
 var md5    = require('MD5');
 var nhs    = require('node-http-server');
+var batteryLevel = require('battery-level');
+
+var getbatteryLevel = function() {
+    batteryLevel(function(err, batt) {
+        if(!err) {
+            window.battery = (+batt * 100).toFixed(0);
+        }
+    });
+};
+getbatteryLevel();
+setInterval(function() {
+    getbatteryLevel();
+}, 30 * 1000);
 
 //加载配置文件
 var loadConfig = function() {
@@ -26,7 +39,7 @@ setInterval(function() {
 fs.readdir(window.userConfig.musicPath, function(err, music) {
     if (err) return;
     window.music = music.map(function(e) {
-        if(e.substr(-4).toLowerCase() === '.ogg') {
+        if(e.substr(-4).toLowerCase() === '.mp3') {
             return {id: e, url: 'http://127.0.0.1:22501/' + e};
         }
     }).filter(function(e) {return e;});

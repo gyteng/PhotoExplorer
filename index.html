@@ -68,7 +68,7 @@
         }
         
     </style>
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="overflow: hidden;">
     <div ui-view></div>
@@ -420,42 +420,6 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
             $scope.imgStyle['margin-bottom'] = '0px';
         }
     };
-    $scope.settings = function() {
-        if($scope.interval) {
-            $interval.cancel($scope.interval);
-        }
-        $scope.hidePic = true;
-        $timeout(function() {
-            $state.go('settings');
-        }, 250);
-    };
-    $scope.toGallery = function() {
-        if($scope.interval) {
-            $interval.cancel($scope.interval);
-        }
-        $scope.hidePic = true;
-        $timeout(function() {
-            $state.go('gallery');
-        }, 250);
-    };
-    $scope.toWeather = function() {
-        if($scope.interval) {
-            $interval.cancel($scope.interval);
-        }
-        $scope.hidePic = true;
-        $timeout(function() {
-            $state.go('weather');
-        }, 250);
-    };
-    $scope.toMusic = function() {
-        if($scope.interval) {
-            $interval.cancel($scope.interval);
-        }
-        $scope.hidePic = true;
-        $timeout(function() {
-            $state.go('music');
-        }, 250);
-    };
 }).controller('SettingController', function($scope, $state, $window) {
     $scope.version = $window.currVersion;
     $scope.randomClass = ((localStorage.getItem('isRandom') === 'true') ? 'fa fa-check-square-o fa-4x fa-fw' : 'fa fa-square-o fa-4x fa-fw');
@@ -518,6 +482,7 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
     } else {
         $scope.currPage = 1;
     }
+
     $scope.box = [[], [], [], []];
     $scope.$watch('currPage', function() {
         $scope.box = [[], [], [], []];
@@ -535,26 +500,26 @@ app.controller('PhotoController', function($scope, $interval, $timeout, $state, 
         }, 250);
     });
     
-    $scope.home = function() {
-        $state.go('photo');
-    };
+    // $scope.home = function() {
+    //     $state.go('photo');
+    // };
     $scope.toPhoto = function(fileName, num) {
         localStorage.setItem('currPicName', fileName);
         localStorage.setItem('currPicNum', ($scope.currPage * 16 - 16 + num) + '');
         $state.go('photo');
     };
     $scope.previous = function() {
-        if($scope.currPage === 1) return;
         $scope.hidePic = true;
         $timeout(function() {
-            $scope.currPage--;
+            if($scope.currPage === 1) {$scope.currPage = $scope.pages;}
+            else {$scope.currPage--;}
         }, 250);
     };
     $scope.next = function() {
-        if($scope.currPage === $scope.pages) return;
         $scope.hidePic = true;
         $timeout(function() {
-            $scope.currPage++;
+            if($scope.currPage === $scope.pages) {$scope.currPage = 1;}
+            else {$scope.currPage++;}
         }, 250);
     };
 
